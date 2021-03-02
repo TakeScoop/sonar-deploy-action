@@ -8,4 +8,4 @@ branches:
   - name: master
     protection:
       required_pull_request_reviews:
-        required_approving_review_count: 0
+        required_pull_request_reviews: null
