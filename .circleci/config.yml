@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:14.16
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: npm ci --quiet
+      - run: npm run lint
+      - run: npm test
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
