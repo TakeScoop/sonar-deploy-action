@@ -1,0 +1,11 @@
+_extends: .github
+repository:
+  name: harbormaster
+  description: REST API for SONAR (Scoop's release server)
+  topics: platform, hapi, sonar
+  homepage: https://harbormaster.takescoop.com
+branches:
+  - name: master
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 0
