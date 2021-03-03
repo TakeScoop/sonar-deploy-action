@@ -11,7 +11,7 @@ async function main () {
     )
   })
 
-  publish(harbormaster)
+  await publish(harbormaster)
 }
 
 main()
