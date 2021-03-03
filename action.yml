@@ -1,0 +1,30 @@
+name: Trigger SONAR Deployment
+description: Triggers a SONAR deployment
+author: TakeScoop
+
+inputs:
+  ref:
+    description: Pull request SHA
+    required: true
+  branch:
+    description: Pull request branch
+    required: true
+  sonar_url:
+    description: SONAR URL
+    required: false
+    default: https://sonar.takescoop.com
+  trigger:
+    description: String to match the comment against to decide whether to take action
+    required: false
+    default: /deploy
+  default_environment:
+    description: Default environment to deploy to
+    required: false
+    default: staging
+  ci_url_prefix:
+    description: Default CI URL prefix, used to create the CI build URL in the Harbormaster package 
+    required: false
+    default: https://app.circleci.com/pipelines/github/
+runs:
+  using: docker
+  image: Dockerfile
