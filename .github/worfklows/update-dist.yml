@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup dependency cache
-      uses: actions/cache@v2
+    - uses: actions/cache@v2
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -19,10 +18,8 @@ jobs:
       run: npm ci --production
     - name: Update dist
       run: npm run build
-    - name: Commit dist
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add dist/index.js
-        git commit -m "chore: publish dist" || echo "Nothing to commit"
-        git push origin master
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update dist
+        file_pattern: dist/index.js
+      
