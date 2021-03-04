@@ -1,9 +1,9 @@
 _extends: .github
 repository:
-  name: harbormaster
-  description: REST API for SONAR (Scoop's release server)
-  topics: platform, hapi, sonar
-  homepage: https://harbormaster.takescoop.com
+  name: sonar-deploy-action
+  description: Action to deploy to the Scoop release server
+  topics: platform, sonar
+  homepage: https://sonar.takescoop.com
 branches:
   - name: master
     protection:
