@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v2
       with: 
         ref: master
-    - name: Keep dist up-to-date
+    - name: Update dist
       run: |
         npm ci --production
         npm run build
