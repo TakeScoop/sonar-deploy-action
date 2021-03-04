@@ -5,7 +5,7 @@ const yaml = require('js-yaml')
 
 module.exports = deploy
 
-async function deploy(harbormaster) {
+async function deploy (harbormaster) {
   if (!context.payload.comment.body.startsWith(core.getInput('trigger'))) {
     core.info('Comment does not match the trigger, exiting.')
     return
