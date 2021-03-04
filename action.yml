@@ -11,8 +11,7 @@ inputs:
     required: true
   sonar_url:
     description: SONAR URL
-    required: false
-    default: https://sonar.takescoop.com
+    required: true
   trigger:
     description: String to match the comment against to decide whether to take action
     required: false

@@ -7,14 +7,13 @@ class Client {
     this.token = token
   }
 
-  static async getServiceAccountToken (credentials) {
+  static async getServiceAccountToken ({ clientEmail, privateKey }) {
     const client = new JWT(
-      credentials.client_email,
+      clientEmail,
       null,
-      credentials.private_key,
+      privateKey,
       ['https://www.googleapis.com/auth/cloud-platform']
     )
-
     return (await client.getAccessToken()).token
   }
 

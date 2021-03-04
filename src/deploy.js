@@ -3,7 +3,9 @@ const core = require('@actions/core')
 const { context } = require('@actions/github')
 const yaml = require('js-yaml')
 
-async function publish (harbormaster) {
+module.exports = deploy
+
+async function deploy(harbormaster) {
   if (!context.payload.comment.body.startsWith(core.getInput('trigger'))) {
     core.info('Comment does not match the trigger, exiting.')
     return
@@ -15,7 +17,7 @@ async function publish (harbormaster) {
   try {
     environment = await harbormaster.getEnvironment({ name: environmentName })
   } catch (err) {
-    return core.setFailed({ url: err.response.config.url, ...err.response.data })
+    return core.setFailed(err)
   }
 
   if (!environment) {
@@ -42,8 +44,6 @@ async function publish (harbormaster) {
 
     core.info('Successfully released')
   } catch (err) {
-    return core.setFailed({ url: err.response.config.url, ...err.response.data })
+    return core.setFailed(err)
   }
 }
-
-module.exports = publish
