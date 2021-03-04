@@ -1,0 +1,20 @@
+on: 
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        ref: master
+    - name: Keep dist up-to-date
+      run: |
+        npm ci --production
+        npm run build
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add dist/index.js
+        git commit -m "chore: publish dist" || echo "nothing to commit"
+        git push origin master

@@ -26,4 +26,4 @@ inputs:
     default: https://app.circleci.com/pipelines/github/
 runs:
   using: node12
-  main: src/index.js
+  main: dist/index.js
