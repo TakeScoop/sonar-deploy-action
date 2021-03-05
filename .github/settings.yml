@@ -4,7 +4,6 @@ repository:
   name: sonar-deploy-action
   description: Action to deploy to the Scoop release server
   topics: platform, sonar
-  homepage: https://sonar.takescoop.com
 branches:
   - name: master
     protection:
