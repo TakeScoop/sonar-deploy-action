@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha src/*.test.js src/**/*.test.js"
+    "test": "mocha src/*.test.js src/**/*.test.js",
+    "build": "ncc build src/index.js -o dist"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/TakeScoop/sonar-deploy-action#readme",
   "devDependencies": {
+    "@vercel/ncc": "^0.27.0",
     "chai": "4.3.3",
     "eslint": "7.21.0",
     "eslint-config-standard": "16.0.2",

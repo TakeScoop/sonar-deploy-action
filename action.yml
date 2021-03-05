@@ -25,5 +25,5 @@ inputs:
     required: false
     default: https://app.circleci.com/pipelines/github/
 runs:
-  using: docker
-  image: Dockerfile
+  using: node12
+  main: dist/index.js
