@@ -54758,10 +54758,17 @@ const Harbormaster = __nccwpck_require__(2498)
 const deploy = __nccwpck_require__(8304)
 
 async function main () {
-  const {
-    client_email: clientEmail,
-    private_key: privateKey
-  } = JSON.parse(Buffer.from(process.env.SONAR_CREDENTIALS, 'base64').toString('utf-8'))
+
+  let clientEmail
+  let privateKey
+  try {
+    ({
+      client_email: clientEmail,
+      private_key: privateKey
+    } = JSON.parse(Buffer.from(process.env.SONAR_CREDENTIALS, 'base64').toString('utf-8')))
+  } catch (err) {
+    return core.setFailed(err)
+  }
 
   core.setSecret(privateKey)
 
