@@ -1,5 +1,6 @@
 _extends: .github
 repository:
+  private: false
   name: sonar-deploy-action
   description: Action to deploy to the Scoop release server
   topics: platform, sonar
