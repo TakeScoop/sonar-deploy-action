@@ -54729,7 +54729,7 @@ async function deploy (harbormaster) {
       version: `${core.getInput('ref')}-test`,
       metadata: {
         ciBuildUrl: `${core.getInput('ci_url_prefix')}${context.payload.repository.full_name}`,
-        commitUrl: context.payload.issue.pull_request.html_url
+        commitUrl: `${context.payload.repository.html_url}/commit/${core.getInput('ref').substr(0, 7)}`
       },
       branch: core.getInput('branch')
     })
