@@ -4,7 +4,6 @@ const Harbormaster = require('./lib/harbormaster')
 const deploy = require('./deploy')
 
 async function main () {
-
   let clientEmail
   let privateKey
   try {
