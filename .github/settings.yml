@@ -8,5 +8,4 @@ repository:
 branches:
   - name: master
     protection:
-      required_pull_request_reviews:
-        required_pull_request_reviews: null
+      required_pull_request_reviews: null
