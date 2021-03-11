@@ -1,17 +1,18 @@
 const fs = require('fs')
 const core = require('@actions/core')
-const { context } = require('@actions/github')
+const path = require('path')
+
 const yaml = require('js-yaml')
 
 module.exports = deploy
 
-async function deploy (harbormaster) {
-  if (!context.payload.comment.body.startsWith(core.getInput('trigger'))) {
+async function deploy (harbormaster, config, context) {
+  if (!context.payload.comment.body.startsWith(config.trigger)) {
     core.info('Comment does not match the trigger, exiting.')
     return
   }
 
-  const [, environmentName = core.getInput('default_environment')] = context.payload.comment.body.split(' ').filter(i => !!i)
+  const [, environmentName = config.defaultEnvironment] = context.payload.comment.body.split(' ').filter(i => !!i)
 
   let environment
   try {
@@ -25,22 +26,30 @@ async function deploy (harbormaster) {
   }
 
   try {
-    const pkg = await harbormaster.postPackage({
-      appManifest: yaml.load(await fs.promises.readFile(`${process.env.GITHUB_WORKSPACE}/.scoop/app.yaml`, 'utf8')),
-      commitTime: context.payload.comment.created_at,
-      version: `${core.getInput('ref')}-test`,
-      metadata: {
-        ciBuildUrl: `${core.getInput('ci_url_prefix')}${context.payload.repository.full_name}`,
-        commitUrl: `${context.payload.repository.html_url}/commit/${core.getInput('ref').substr(0, 7)}`
-      },
-      branch: core.getInput('branch')
-    })
+    const manifests = (await Promise.all(
+      config.deploymentManifests.split(',').map(filePath => fs.promises.readFile(path.resolve(config.workspace, filePath.trim()), 'utf8'))
+    )).map(file => yaml.load(file))
 
-    await harbormaster.postRelease({
-      package: { id: pkg.id },
-      environment: { name: environmentName },
-      type: 'promote'
-    })
+    const packages = await Promise.all(
+      manifests.map((appManifest) => harbormaster.postPackage({
+        appManifest,
+        commitTime: context.payload.comment.created_at,
+        version: config.version,
+        metadata: {
+          ciBuildUrl: `${config.ciUrlPrefix}${context.payload.repository.full_name}`,
+          commitUrl: `${context.payload.repository.html_url}/commit/${config.gitRef.substr(0, 7)}`
+        },
+        branch: config.branch
+      }))
+    )
+
+    await Promise.all(
+      packages.map((pkg) => harbormaster.postRelease({
+        package: { id: pkg.id },
+        environment: { name: environment.name },
+        type: 'promote'
+      }))
+    )
 
     core.info('Successfully released')
   } catch (err) {
