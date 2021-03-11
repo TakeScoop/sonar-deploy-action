@@ -31,7 +31,7 @@ async function main () {
     gitRef: core.getInput('ref'),
     branch: core.getInput('branch'),
     trigger: core.getInput('trigger'),
-    workspace: process.env.GITHUB_WORKSPACE,
+    workspace: process.env.GITHUB_WORKSPACE
   }
 
   await deploy(harbormaster, config, context)
