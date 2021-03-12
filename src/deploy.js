@@ -1,17 +1,18 @@
 const fs = require('fs')
 const core = require('@actions/core')
-const { context } = require('@actions/github')
+const path = require('path')
+
 const yaml = require('js-yaml')
 
 module.exports = deploy
 
-async function deploy (harbormaster) {
-  if (!context.payload.comment.body.startsWith(core.getInput('trigger'))) {
+async function deploy (harbormaster, config, context) {
+  if (!context.payload.comment.body.startsWith(config.trigger)) {
     core.info('Comment does not match the trigger, exiting.')
     return
   }
 
-  const [, environmentName = core.getInput('default_environment')] = context.payload.comment.body.split(' ').filter(i => !!i)
+  const [, environmentName = config.defaultEnvironment] = context.payload.comment.body.split(' ').filter(i => !!i)
 
   let environment
   try {
@@ -25,20 +26,24 @@ async function deploy (harbormaster) {
   }
 
   try {
+    const appManifest = yaml.load(
+      await fs.promises.readFile(path.resolve(config.workspace, config.appManifest), 'utf8')
+    )
+
     const pkg = await harbormaster.postPackage({
-      appManifest: yaml.load(await fs.promises.readFile(`${process.env.GITHUB_WORKSPACE}/.scoop/app.yaml`, 'utf8')),
+      appManifest,
       commitTime: context.payload.comment.created_at,
-      version: `${core.getInput('ref')}-test`,
+      version: config.version,
       metadata: {
-        ciBuildUrl: `${core.getInput('ci_url_prefix')}${context.payload.repository.full_name}`,
-        commitUrl: `${context.payload.repository.html_url}/commit/${core.getInput('ref').substr(0, 7)}`
+        ciBuildUrl: `${config.ciUrlPrefix}${context.payload.repository.full_name}`,
+        commitUrl: `${context.payload.repository.html_url}/commit/${config.gitRef.substr(0, 7)}`
       },
-      branch: core.getInput('branch')
+      branch: config.branch
     })
 
     await harbormaster.postRelease({
       package: { id: pkg.id },
-      environment: { name: environmentName },
+      environment: { name: environment.name },
       type: 'promote'
     })
 

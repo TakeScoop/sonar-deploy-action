@@ -1,4 +1,5 @@
 const core = require('@actions/core')
+const { context } = require('@actions/github')
 
 const Harbormaster = require('./lib/harbormaster')
 const deploy = require('./deploy')
@@ -22,7 +23,18 @@ async function main () {
     token: await Harbormaster.getServiceAccountToken({ clientEmail, privateKey })
   })
 
-  await deploy(harbormaster)
+  const config = {
+    defaultEnvironment: core.getInput('default_environment'),
+    appManifest: core.getInput('app_manifest'),
+    version: `${core.getInput('ref')}-test`,
+    ciUrlPrefix: core.getInput('ci_url_prefix'),
+    gitRef: core.getInput('ref'),
+    branch: core.getInput('branch'),
+    trigger: core.getInput('trigger'),
+    workspace: process.env.GITHUB_WORKSPACE
+  }
+
+  await deploy(harbormaster, config, context)
 }
 
 main()
