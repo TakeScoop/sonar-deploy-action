@@ -54724,30 +54724,26 @@ async function deploy (harbormaster, config, context) {
   }
 
   try {
-    const manifests = (await Promise.all(
-      config.deploymentManifests.split(',').map(filePath => fs.promises.readFile(path.resolve(config.workspace, filePath.trim()), 'utf8'))
-    )).map(file => yaml.load(file))
-
-    const packages = await Promise.all(
-      manifests.map((appManifest) => harbormaster.postPackage({
-        appManifest,
-        commitTime: context.payload.comment.created_at,
-        version: config.version,
-        metadata: {
-          ciBuildUrl: `${config.ciUrlPrefix}${context.payload.repository.full_name}`,
-          commitUrl: `${context.payload.repository.html_url}/commit/${config.gitRef.substr(0, 7)}`
-        },
-        branch: config.branch
-      }))
+    const appManifest = yaml.load(
+      await fs.promises.readFile(path.resolve(config.workspace, config.appManifest), 'utf8')
     )
 
-    await Promise.all(
-      packages.map((pkg) => harbormaster.postRelease({
-        package: { id: pkg.id },
-        environment: { name: environment.name },
-        type: 'promote'
-      }))
-    )
+    const pkg = await harbormaster.postPackage({
+      appManifest,
+      commitTime: context.payload.comment.created_at,
+      version: config.version,
+      metadata: {
+        ciBuildUrl: `${config.ciUrlPrefix}${context.payload.repository.full_name}`,
+        commitUrl: `${context.payload.repository.html_url}/commit/${config.gitRef.substr(0, 7)}`
+      },
+      branch: config.branch
+    })
+
+    await harbormaster.postRelease({
+      package: { id: pkg.id },
+      environment: { name: environment.name },
+      type: 'promote'
+    })
 
     core.info('Successfully released')
   } catch (err) {
@@ -54788,7 +54784,7 @@ async function main () {
 
   const config = {
     defaultEnvironment: core.getInput('default_environment'),
-    deploymentManifests: core.getInput('deployment_manifests'),
+    appManifest: core.getInput('app_manifest'),
     version: `${core.getInput('ref')}-test`,
     ciUrlPrefix: core.getInput('ci_url_prefix'),
     gitRef: core.getInput('ref'),
