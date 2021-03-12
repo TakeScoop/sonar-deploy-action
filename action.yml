@@ -24,8 +24,8 @@ inputs:
     description: Default CI URL prefix, used to create the CI build URL in the Harbormaster package 
     required: false
     default: https://app.circleci.com/pipelines/github/
-  deployment_manifests:
-    description: Comma separated list of deployment manifest paths
+  app_manifest:
+    description: Application deployment configuration for SONAR consumption
     required: false
     default: .scoop/app.yaml
 runs:

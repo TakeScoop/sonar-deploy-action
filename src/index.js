@@ -25,7 +25,7 @@ async function main () {
 
   const config = {
     defaultEnvironment: core.getInput('default_environment'),
-    deploymentManifests: core.getInput('deployment_manifests'),
+    appManifest: core.getInput('app_manifest'),
     version: `${core.getInput('ref')}-test`,
     ciUrlPrefix: core.getInput('ci_url_prefix'),
     gitRef: core.getInput('ref'),

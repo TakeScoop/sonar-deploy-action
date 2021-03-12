@@ -1,4 +1,4 @@
 kind: takescoop.com/sonar-app/v1
 
 app:
-  name: app1
+  name: app

@@ -36,7 +36,7 @@ const getContext = (extensions = {}) => _.merge({
 
 const getConfig = (extensions = {}) => _.merge({
   defaultEnvironment: 'staging',
-  deploymentManifests: 'test/fixtures/app1.yaml',
+  appManifest: 'test/fixtures/app.yaml',
   version: '124cb6d97d86ed4b93eccc95a8ce4ff58a24f843-test',
   ciUrlPrefix: 'https://app.circleci.com/pipelines/github/',
   gitRef: '124cb6d97d86ed4b93eccc95a8ce4ff58a24f843',
@@ -46,6 +46,7 @@ const getConfig = (extensions = {}) => _.merge({
 }, extensions)
 
 describe('deploy', () => {
+  
   it('should call the harbormaster API appropriately for a single deployment request', async () => {
     const packageId = '12345'
     const harbormaster = getHarbormaster({
@@ -67,7 +68,7 @@ describe('deploy', () => {
       branch: config.branch,
       version: config.version
     })
-    expect(harbormaster.postPackage.getCalls()[0].args[0].appManifest.app.name).to.equal('app1')
+    expect(harbormaster.postPackage.getCalls()[0].args[0].appManifest.app.name).to.equal('app')
     expect(harbormaster.postPackage.getCalls()[0].args[0].metadata).to.include({
       ciBuildUrl: `${config.ciUrlPrefix}${context.payload.repository.full_name}`,
       commitUrl: `${context.payload.repository.html_url}/commit/${config.gitRef.substr(0, 7)}`
@@ -80,23 +81,5 @@ describe('deploy', () => {
       environment: { name: config.defaultEnvironment },
       type: 'promote'
     })
-  })
-
-  it('should call the harbormaster API for each deployment request', async () => {
-    const harbormaster = getHarbormaster()
-    sinon.spy(harbormaster)
-    const config = getConfig({
-      deploymentManifests: 'test/fixtures/app1.yaml,test/fixtures/app2.yaml'
-    })
-    const context = getContext()
-    await deploy(harbormaster, config, context)
-
-    expect(harbormaster.getEnvironment.calledOnce).to.equal(true)
-
-    expect(harbormaster.postPackage.calledTwice).to.equal(true)
-    expect(harbormaster.postPackage.getCalls()[0].args[0].appManifest.app.name).to.equal('app1')
-    expect(harbormaster.postPackage.getCalls()[1].args[0].appManifest.app.name).to.equal('app2')
-
-    expect(harbormaster.postRelease.calledTwice).to.equal(true)
   })
 })
