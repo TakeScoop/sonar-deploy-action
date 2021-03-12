@@ -46,7 +46,6 @@ const getConfig = (extensions = {}) => _.merge({
 }, extensions)
 
 describe('deploy', () => {
-  
   it('should call the harbormaster API appropriately for a single deployment request', async () => {
     const packageId = '12345'
     const harbormaster = getHarbormaster({
