@@ -28,6 +28,9 @@ inputs:
     description: Application deployment configuration for SONAR consumption
     required: false
     default: .scoop/app.yaml
+  version:
+    description: The SONAR package version
+    required: false
 runs:
   using: node12
   main: dist/index.js
