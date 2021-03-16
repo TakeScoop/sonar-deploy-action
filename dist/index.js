@@ -54785,7 +54785,7 @@ async function main () {
   const config = {
     defaultEnvironment: core.getInput('default_environment'),
     appManifest: core.getInput('app_manifest'),
-    version: core.getInput('version') || `${core.getInput('ref')}-test`,
+    version: core.getInput('version'),
     ciUrlPrefix: core.getInput('ci_url_prefix'),
     gitRef: core.getInput('ref'),
     branch: core.getInput('branch'),
