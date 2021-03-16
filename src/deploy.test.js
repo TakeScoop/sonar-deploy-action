@@ -37,7 +37,7 @@ const getContext = (extensions = {}) => _.merge({
 const getConfig = (extensions = {}) => _.merge({
   defaultEnvironment: 'staging',
   appManifest: 'test/fixtures/app.yaml',
-  version: '124cb6d97d86ed4b93eccc95a8ce4ff58a24f843-test',
+  version: '124cb6d97d86ed4b93eccc95a8ce4ff58a24f843',
   ciUrlPrefix: 'https://app.circleci.com/pipelines/github/',
   gitRef: '124cb6d97d86ed4b93eccc95a8ce4ff58a24f843',
   branch: 'feature',

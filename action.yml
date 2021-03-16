@@ -30,7 +30,7 @@ inputs:
     default: .scoop/app.yaml
   version:
     description: The SONAR package version
-    required: false
+    required: true
 runs:
   using: node12
   main: dist/index.js
