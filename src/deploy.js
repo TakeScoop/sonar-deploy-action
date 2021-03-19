@@ -7,6 +7,7 @@ const yaml = require('js-yaml')
 module.exports = deploy
 
 async function deploy (harbormaster, config, context) {
+  core.info('Starting deploy')
   if (!context.payload.comment.body.startsWith(config.trigger)) {
     core.info('Comment does not match the trigger, exiting.')
     return
@@ -49,6 +50,9 @@ async function deploy (harbormaster, config, context) {
 
     core.info('Successfully released')
   } catch (err) {
+    core.error(err)
+    core.error(err.stack)
+    core.error(err.message)
     return core.setFailed(`${err.message}\n${err.stack}`)
   }
 }
