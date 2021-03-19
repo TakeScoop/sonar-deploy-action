@@ -4,8 +4,6 @@ const Harbormaster = require('./harbormaster')
 
 const expect = chai.expect
 
-const TEST_URL = "https://test.com"
-
 function newHarbormaster (props = {}) {
   return new Harbormaster({
     url: 'https://test.com',
@@ -32,7 +30,7 @@ describe('harbormaster', () => {
     nock(harbormaster.url)
       .post(`/packages?appName=${pkg.appManifest.app.name}`)
       .reply(409, { message: 'oh no!' })
-    
+
     const err = await harbormaster.postPackage(pkg).catch(err => err)
     expect(err.message).to.include('oh no!')
   })
