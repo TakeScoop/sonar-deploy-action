@@ -54747,10 +54747,9 @@ async function deploy (harbormaster, config, context) {
 
     core.info('Successfully released')
   } catch (err) {
-    core.error(err)
-    core.error(err.stack)
-    core.error(err.message)
-    return core.setFailed(`${err.message}\n${err.stack}`)
+    console.error(err.response)
+
+    return core.setFailed(err)
   }
 }
 
