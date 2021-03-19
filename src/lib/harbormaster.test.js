@@ -1,8 +1,6 @@
 const nock = require('nock')
-const chai = require('chai').use(require('chai-as-promised'))
+const expect = require('chai').expect
 const Harbormaster = require('./harbormaster')
-
-const expect = chai.expect
 
 function newHarbormaster (props = {}) {
   return new Harbormaster({
@@ -14,7 +12,6 @@ function newHarbormaster (props = {}) {
 
 describe('harbormaster', () => {
   beforeEach(() => nock.cleanAll())
-
   it('should include the error data when a request fails', async () => {
     const harbormaster = newHarbormaster()
     const pkg = {

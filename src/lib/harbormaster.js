@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const get = require('lodash/get')
 const axios = require('axios')
 const { JWT } = require('google-auth-library')
 
@@ -7,9 +7,9 @@ async function request (...args) {
     return await axios(...args)
   } catch (err) {
     // https://github.com/axios/axios#handling-errors
-    if (_.get(err, 'response.data')) {
+    if (get(err, 'response.data')) {
       err.message += '\n' + JSON.stringify(err.response.data)
-    } else if (_.get(err, 'request.data')) {
+    } else if (get(err, 'request.data')) {
       err.message += '\n' + JSON.stringify(err.request.data)
     }
 
