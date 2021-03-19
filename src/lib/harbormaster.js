@@ -2,15 +2,15 @@ const _ = require('lodash')
 const axios = require('axios')
 const { JWT } = require('google-auth-library')
 
-async function request(args) {
+async function request (...args) {
   try {
     return await axios(...args)
   } catch (err) {
     // https://github.com/axios/axios#handling-errors
-    if (_.get(err, 'response.data.message')) {
-      err.message += '\n' + err.response.data.message
-    } else if (_.get(err, 'request.data.message')) {
-      err.message += '\n' + err.request.data.message
+    if (_.get(err, 'response.data')) {
+      err.message += '\n' + JSON.stringify(err.response.data)
+    } else if (_.get(err, 'request.data')) {
+      err.message += '\n' + JSON.stringify(err.request.data)
     }
 
     throw err
@@ -36,14 +36,14 @@ class Client {
   async getEnvironment (query) {
     const environments = await request({
       url: `${this.url}/environments`,
-      headers: { Authorization: `Bearer ${this.token}` },
+      headers: { Authorization: `Bearer ${this.token}` }
     })
 
     return environments.data.find((env) => env.name === query.name)
   }
 
   async postPackage (props) {
-    return (await axios({
+    return (await request({
       url: `${this.url}/packages?appName=${props.appManifest.app.name}`,
       headers: { Authorization: `Bearer ${this.token}` },
       method: 'post',
@@ -52,7 +52,7 @@ class Client {
   }
 
   async postRelease (props) {
-    return (await axios({
+    return (await request({
       url: `${this.url}/releases`,
       headers: { Authorization: `Bearer ${this.token}` },
       method: 'post',
