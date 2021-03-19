@@ -14,7 +14,6 @@ function newHarbormaster (props = {}) {
 }
 
 describe('harbormaster', () => {
-
   beforeEach(() => nock.cleanAll())
 
   it('should include the error data when a request fails', async () => {
