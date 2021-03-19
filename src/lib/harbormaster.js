@@ -1,5 +1,21 @@
+const _ = require('lodash')
 const axios = require('axios')
 const { JWT } = require('google-auth-library')
+
+async function request(args) {
+  try {
+    return await axios(...args)
+  } catch (err) {
+    // https://github.com/axios/axios#handling-errors
+    if (_.get(err, 'response.data.message')) {
+      err.message += '\n' + err.response.data.message
+    } else if (_.get(err, 'request.data.message')) {
+      err.message += '\n' + err.request.data.message
+    }
+
+    throw err
+  }
+}
 
 class Client {
   constructor ({ url, token }) {
@@ -18,9 +34,9 @@ class Client {
   }
 
   async getEnvironment (query) {
-    const environments = await axios({
+    const environments = await request({
       url: `${this.url}/environments`,
-      headers: { Authorization: `Bearer ${this.token}` }
+      headers: { Authorization: `Bearer ${this.token}` },
     })
 
     return environments.data.find((env) => env.name === query.name)
