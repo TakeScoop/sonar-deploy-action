@@ -54716,7 +54716,7 @@ async function deploy (harbormaster, config, context) {
   try {
     environment = await harbormaster.getEnvironment({ name: environmentName })
   } catch (err) {
-    return core.setFailed(err)
+    return core.setFailed(`${err.message}\n${err.stack}`)
   }
 
   if (!environment) {
@@ -54747,7 +54747,10 @@ async function deploy (harbormaster, config, context) {
 
     core.info('Successfully released')
   } catch (err) {
-    return core.setFailed(err)
+    core.error(err)
+    core.error(err.stack)
+    core.error(err.message)
+    return core.setFailed(`${err.message}\n${err.stack}`)
   }
 }
 
