@@ -8,9 +8,9 @@ async function request (...args) {
   } catch (err) {
     // https://github.com/axios/axios#handling-errors
     if (get(err, 'response.data')) {
-      err.message += '\n' + JSON.stringify(err.response.data)
+      err.message += '\n' + JSON.stringify(err.response.data, null, 2)
     } else if (get(err, 'request.data')) {
-      err.message += '\n' + JSON.stringify(err.request.data)
+      err.message += '\n' + JSON.stringify(err.request.data, null, 2)
     }
 
     throw err
