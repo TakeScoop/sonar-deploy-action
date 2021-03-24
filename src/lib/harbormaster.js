@@ -1,5 +1,21 @@
+const get = require('lodash/get')
 const axios = require('axios')
 const { JWT } = require('google-auth-library')
+
+async function request (...args) {
+  try {
+    return await axios(...args)
+  } catch (err) {
+    // https://github.com/axios/axios#handling-errors
+    if (get(err, 'response.data')) {
+      err.message += '\n' + JSON.stringify(err.response.data, null, 2)
+    } else if (get(err, 'request.data')) {
+      err.message += '\n' + JSON.stringify(err.request.data, null, 2)
+    }
+
+    throw err
+  }
+}
 
 class Client {
   constructor ({ url, token }) {
@@ -18,7 +34,7 @@ class Client {
   }
 
   async getEnvironment (query) {
-    const environments = await axios({
+    const environments = await request({
       url: `${this.url}/environments`,
       headers: { Authorization: `Bearer ${this.token}` }
     })
@@ -27,7 +43,7 @@ class Client {
   }
 
   async postPackage (props) {
-    return (await axios({
+    return (await request({
       url: `${this.url}/packages?appName=${props.appManifest.app.name}`,
       headers: { Authorization: `Bearer ${this.token}` },
       method: 'post',
@@ -36,7 +52,7 @@ class Client {
   }
 
   async postRelease (props) {
-    return (await axios({
+    return (await request({
       url: `${this.url}/releases`,
       headers: { Authorization: `Bearer ${this.token}` },
       method: 'post',
